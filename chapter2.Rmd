@@ -46,7 +46,7 @@ p
 
 *Next I estimate ordinary least squares (OLS) regression using points and dependent variable and age, gender and attitude as independent variables. The point is to find the best fit between two variables by estimating a line, which is closest to the actual observations. This is done by squaring the observations and calculating on which line the the sum of the squares is smallest, while keeping the other variables constant.*
 
-*The regression estimates show that attitudes (toward statistics) have strong and positive association  with exam points (significant with 99.99 % confidence level), but age and gender do not have a statisticly significant association with exam points. Based on this we can say that if you are enthusiastic about statistics, you are likely to do well in the exam. Age and gender do not seem to have a systematic effect. *
+*The regression estimates show that attitudes (toward statistics) have strong and positive association  with exam points (significant at 99.99 % confidence level), but age and gender do not have a statistically significant association with exam points. Based on this, we can say that if you are enthusiastic about statistics, you are likely to do well in the exam. Age and gender do not seem to have a systematic effect. *
 
 ```{r, include=TRUE}
 regression_model <- lm(points ~ age + gender + attitude, data = exercise2regression)
@@ -60,7 +60,7 @@ regression_model2 <- lm(points ~ attitude, data = exercise2regression)
 summary(regression_model2)
 ```
 
-*The results of the first regression showed a positive and statistically significant association between attitudes toward statistics and exam points, as well as negative, but not-significant association between gender, age and exam points. The results of the second regression show that one unit change in attitude (Likert scale from 1 to 5) are associated with 3.5255 change in exam points. This can be considered as a substantial difference as the difference between attitude 1 and 5 would be on average 17 points. The multiple R squared shows that our model can explain about 19 % of the variation of the exam results. While this is not a huge number, in social science research it is very common to have low numbers on R squared as the models are generally not capable of capturing everything that is associated with the dependent variable, * 
+*The results of the first regression showed a positive and statistically significant association between attitudes toward statistics and exam points, as well as negative, but non-significant association between gender, age and exam points. The results of the second regression show that one unit change in attitude (Likert scale from 1 to 5) are associated with 3.5255 change in exam points. This can be considered as a substantial difference as the difference between attitude 1 and 5 would be on average 17 points. The multiple R squared shows that our model can explain about 19 % of the variation of the exam results. While this is not a huge number, in social science research it is very common to have small R squared as the models are generally not capable of capturing everything that is associated with the dependent variable. * 
 
 
 
