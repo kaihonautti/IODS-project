@@ -1,80 +1,19 @@
----
-title: "Chapter 2"
-author: "Antti Kaihovaara"
-output:
-  html_document: default
----
+```{r, include=FALSE}
+#---
+#title: "Chapter 3 data analysis"
+#author: "Antti Kaihovaara"
+#date: "November 17, 2018"
+#description: "Chapter 3 data"
+#Data : "https://archive.ics.uci.edu/ml/datasets/Student+Performance"
+#---
+```
 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#Excercise 2
-
-##Data and data analysis
-
-*The data is based on a survey and includes 7 variables and 166 observations. The variables are gender, three different vectors of respondents' attitudes (based on Likert-scale) and total points.*
-
-```{r, include=TRUE}
-exercise2regression <- read.table("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/learning2014.txt", sep=",", header=TRUE,)
-library(ggplot2)
-library(knitr)
-library(rmarkdown)
-dim(exercise2regression)
-str(exercise2regression)
-```
-
-*Gender is a binary variable, but the other three are to some degree normally distributed continiuos variables. Age is rather strongly right tailed whereas deep and points are left tailed. The variables aren't closely correlated: the strongest correlation (0.437) can be found from the association between attitudes and points and smallest correlation between deep and points (0.0101). As one would expect, some variables are also negatively correlated, for example surf and deep (-0.324).*
-
-```{r, include=FALSE}
-library(GGally)
-library(ggplot2)
-p <- ggpairs(exercise2regression, mapping = aes(), lower = list(combo = wrap("facethist", bins = 20)))
-```
-
-```{r, include=TRUE}
-pairs(exercise2regression[-1])
-p <- ggpairs(exercise2regression, mapping = aes(), lower = list(combo = wrap("facethist", bins = 20)))
-p
-```
-
-
-
-
-##Regression models
-
-*Next I estimate ordinary least squares (OLS) regression using points and dependent variable and age, gender and attitude as independent variables. The point is to find the best fit between two variables by estimating a line, which is closest to the actual observations. This is done by squaring the observations and calculating on which line the the sum of the squares is smallest, while keeping the other variables constant.*
-
-*The regression estimates show that attitudes (toward statistics) have strong and positive association  with exam points (significant at 99.99 % confidence level), but age and gender do not have a statistically significant association with exam points. Based on this, we can say that if you are enthusiastic about statistics, you are likely to do well in the exam. Age and gender do not seem to have a systematic effect. *
-
-```{r, include=TRUE}
-regression_model <- lm(points ~ age + gender + attitude, data = exercise2regression)
-summary(regression_model)
-```
-
-*As gender and age seem to be irrelavant variables, I drop them from the next regression. This does not change much: only the explanatory power of the "attitude" variable increases slightly.* 
-
-```{r, include=TRUE}
-regression_model2 <- lm(points ~ attitude, data = exercise2regression)
-summary(regression_model2)
-```
-
-*The results of the first regression showed a positive and statistically significant association between attitudes toward statistics and exam points, as well as negative, but non-significant association between gender, age and exam points. The results of the second regression show that one unit change in attitude (Likert scale from 1 to 5) are associated with 3.5255 change in exam points. This can be considered as a substantial difference as the difference between attitude 1 and 5 would be on average 17 points. The multiple R squared shows that our model can explain about 19 % of the variation of the exam results. While this is not a huge number, in social science research it is very common to have small R squared as the models are generally not capable of capturing everything that is associated with the dependent variable. * 
-
-
-
-##Graphical diagnostics
-
-*Finally, we graph the results to facilitate interpretation. In the first graph (residuals vs fitted), we see that the results are not driven by outliers. Variances of the errors terms seem rather equal. However, due to only a few observations at the top end of the points distribution, we see some non-linearity, but not enough to put the results of the regression analysis to question. In the second graph (Q-Q plot), we plot two sets of quintiles against one another. We see a quite straight line with a heavy tail to the left and light tail to the right. This means that our observations are not perfectly normally distributed, but nothing too worrying here as the tails are not big enough to skew the association. The third graph helps us to identify influental outliers. Based on the graph we can fairly confidently argue that outliers are not skewing the results as the "Cook's distance" dashed curves don't even appear on the plot. Based on these diagnostic plots, we can conclude that based on the graphical diagnostics, we have no reason to question the validity of our model.*
-```{r, include=TRUE}
-par(mfrow = c(2,2))
-plot(regression_model2, which =1)
-plot(regression_model2, which =2)
-plot(regression_model2, which =5)
-```
-
-#Exercise 3
+#Exercise 2
 
 ```{r, include=FALSE}
 
@@ -284,7 +223,8 @@ loss_func <- function(class, prob) {
  
 loss_func(class = chapter3analysis$high_use, prob = chapter3analysis$probability)
 
-```
+
+
 
 
 
