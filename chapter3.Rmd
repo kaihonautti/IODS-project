@@ -9,11 +9,8 @@
 ```
 
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
-#Exercise 2
+#Exercise 3
 
 ```{r, include=FALSE}
 
@@ -56,7 +53,7 @@ Alcohol is a hell of a drug. In this exercise we assume that those who consume l
 4. Mother's education is negatively correlated with alcohol consumption (Medu).
  
 
-#Graphical illustrations of the associations
+##Graphical illustrations of the associations
 
 Next we study graphically the associations between high use of alcohol and our chosen explanatory variables using boxplots, barplots and crosstabs. 
 
@@ -69,7 +66,7 @@ Almost all students are motivated to get higher education, which makes it diffic
 Interestingly, mother's education does not seem to have a significant association with high use of alcohol.
 
 
-## 1. Alcohol use and study time
+### 1. Alcohol use and study time
 ```{r, include=TRUE}
 
 
@@ -90,7 +87,7 @@ boxplot(chapter3analysis$studytime, chapter3analysis$failures)
 
 
 
-## 2. Alcohol use and study and past class failures
+### 2. Alcohol use and study and past class failures
 
 ```{r, include=TRUE}
 
@@ -106,7 +103,7 @@ gg2
 table(high_use = chapter3analysis$high_use, failures = chapter3analysis$failures)
 
 ```
-## 3. Alcohol use and willingness to get higher education
+### 3. Alcohol use and willingness to get higher education
 
 ```{r, include=TRUE}
 g3 <- ggplot(chapter3analysis, aes(x = high_use, y = higher))
@@ -121,7 +118,7 @@ table(high_use = chapter3analysis$high_use, higher= chapter3analysis$higher)
 ```
 
 
-## 4. Alcohol use and mother's education
+### 4. Alcohol use and mother's education
 ```{r, include=TRUE}
 g4 <- ggplot(chapter3analysis, aes(x = high_use, y = Medu))
 
@@ -135,7 +132,7 @@ table(high_use = chapter3analysis$high_use, Medu = chapter3analysis$Medu)
 
 ```
 
-#Logistic regression model
+##Logistic regression model
 
 The graphical illustrations suggested that we could perhaps reject the null hypothesis in our three first hypotheses. However, before umping to conclusions, let's run a logistic regression model to see whether there is statistically significant association between the variables. 
 
@@ -180,7 +177,7 @@ P=Odds ratio/1+Odds ratio - P(being a high user)
 
 The formula above tells us that at one unit rise in study time means about 63 % probability of being a high user in comparison to lower category in study time. As the the categories are not identical, this is difficult to translate into hours.
 
-#Predictive power of the model
+##Predictive power of the model
 
 Next, we look at how well our model is able to predict whether a student is a high user of alcohol or not. It seems that our model is capabable of prediciting the outcome about 7 times out of 10. While being far from perfcect, this is a reasonable outcome when we consider the fact that modelling was done without theory and we did not even try to tackle the omitted variable bias. Simple guessing would have found the right outcome 5 times out of 10, so with the right tools we were able to improve this rate substantially.
 
@@ -206,7 +203,7 @@ g + geom_point()
 table(high_use = chapter3analysis$high_use, prediction = chapter3analysis$prediction) %>% prop.table %>% addmargins
 ```
 
-#Cross-validation
+##Cross-validation
 
 Finally, we cross-validate the data by calculating the proportion of correctly classified obsrvations. This method allows us to predict how well our model is generalizable to an independent data set.
 
@@ -223,7 +220,7 @@ loss_func <- function(class, prob) {
  
 loss_func(class = chapter3analysis$high_use, prob = chapter3analysis$probability)
 
-
+```
 
 
 
