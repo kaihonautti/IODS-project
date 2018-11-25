@@ -11,12 +11,12 @@
 #Exercise 4
 
 ##Data 
-This time our data incudes variables that describe housing values in suburbs of Boston. This include e.g. per capita crime rate, average number of rooms per dwelling and pupil-teacher ratio by town. In total the data consists of 14 variables and 506 observations.
+This time our data includes variables that describe housing values in suburbs of Boston. These are e.g. per capita crime rate, average number of rooms per dwelling and pupil-teacher ratio by town. In total, the data consists of 14 variables and 506 observations.
 
 You can read more about the data from here: https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/Boston.html
 
 
-The overview of the variables is shown below. Most attention should be paid to variable "medv"", which describes the median value of the of the owner-occupied homes in thousands of dollars. The values of "medv" range from 5 to 450 with the media 21.20 and mean 22.53. All in all, the variables are in general not normally distributed.
+The overview of the variables is shown below. Most attention should be paid to variable "medv"", which describes the median value of the of the owner-occupied homes in thousands of dollars. The values of "medv" range from 5 to 50 with the median 21.20 and mean 22.53. All in all, the variables are in general not normally distributed.
 
 
 ```{r, include=FALSE}
@@ -59,7 +59,7 @@ corrplot(cor_matrix, method="circle", type="upper", cl.pos="b", tl.pos="d", tl.c
 
 ##Standardizing the data and creating training and test sets
 
-Next we standardize the data set to improve comparability between variables that are in different scales. Standardization allows us to look at the standard deviations, which in turn shows how spread the numbers of the variables are. The standardized variables are centered around the mean and have thus both negative and positive values. We scale the variables to satisfy the assumption of normally distributed variables in linear discrimination analysis.
+Next we standardize the dataset to improve comparability between variables that are in different scales. Standardization allows us to look at the standard deviations, which in turn shows how spread the numbers of the variables are. The standardized variables are centered around the mean and have thus both negative and positive values. We scale the variables to satisfy the assumption of normally distributed variables in linear discrimination analysis.
 
 ```{r, include=TRUE}
 
@@ -70,7 +70,7 @@ summary(boston_scaled)
 
 ```
 
-Now it is time to use the scaled crime rate to create a categorial variable. We start by changing our scaled object to a data frame and creating a quintile vector of of "crim". Then we use the quintiles as break points to create the categorical variable with categories "low", "medium low", "medium high" and "high". Finally, we drop the old crime rate variable from the dataset and add the new categorical value to scaled data.
+Now it is time to use the scaled crime rate to create a categorial variable. We start by changing our scaled object to a data frame and creating a quintile vector of "crim". Then we use the quintiles as break points to create the categorical variable with categories "low", "medium low", "medium high" and "high". Finally, we drop the old crime rate variable from the dataset and add the new categorical value to scaled data.
 
 
 ```{r, include=TRUE}
@@ -160,7 +160,7 @@ lda.arrows(lda.fit, myscale = 1.5)
 
 Based on the training model used in the previous section, we classify the observations with LDA. LDA calculates the probababilities for the new observation for belonging in each of the classes. The observation is classified to the class of the highest probability (based on Bayes theorem).
 
-The results are cross tabulated with the crime categories from the test set. The cross tabulation reveals that LDA model is more capable in predicting high crime rates on the test data. For other classes the predictions are correct only roughly little over half of the times. The overall error rate is 33 %, which is not terrible, but not too good either.
+The results are cross tabulated with the crime categories from the test set. The cross tabulation reveals that LDA model is more capable in predicting high crime rates on the test data. For other classes the predictions are correct only roughly little over half of the times. The overall error rate is around 39 %, which is not terrible, but not too good either.
 
 
 ```{r, include=TRUE}
@@ -182,7 +182,7 @@ summary(test)
 ```
 
 
-## K-means algorithms on a reaload dataset
+## K-means algorithms on a realoaded dataset
 
 As our final task this time, we test what is the optimal number of clusters in the dataset. We do this with k-means algorithm, but first we must reload the data,  standardize the dataset and scale the variables to comparable distances.
 
