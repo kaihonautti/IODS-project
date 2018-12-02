@@ -1,0 +1,193 @@
+```{r, include=FALSE}
+#---
+#title: "Chapter 5 analysis"
+#author: "Antti Kaihovaara"
+#date: "December 1, 2018"
+#description: "Chapter 5 analysis"
+#Data : "http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human1.txt"
+#---
+```
+
+#Exercise 5
+
+This week's data is comes from Human Development Index (HDI), which is collected and upheld by the UNDP.The HDI combines several indicators from most countries in the world to construct and index that measures human development and welfare.It is made of three different indices, which are Life Expectancy Index, Education Index, and GNI Index. The HDI functions as an alternative for GDP as it contains information on e.g. maternal mortality ratio, life expectancy and theproportion of females in the labour force. Alltogether, the data contains 8 variables and 155 observations.
+
+The variables are  
+- Edu2.FM (proportion of females with at least secodary education divided by the proportion of males with at least secondary education)  
+- Labo.FM (proportion of females in the labour force divided by the proportion of males in the labour force)  
+- Edu.Exp (expected years of schooling)  
+- Life.Exp (life expectancy at birth)  
+- GNI (gross national income)  
+- Mat.Mor (maternal mortality rate)  
+- Ado.Birth (adolescent birth rate)  
+- Parli.F (percentage of females representatatitves in parliament)  
+
+Read more from here: http://hdr.undp.org/en/content/human-development-index-hdi
+
+##Graphical overview
+
+```{r, include=FALSE}
+library(dplyr)
+library(corrplot)
+library(GGally)
+library(kableExtra)
+```
+
+Let's give the variables in our data a closer look. We have 8 continious variables of which only expected years of schooling (Edu.exp) seems to be normally distributed. Edu2.FM, Labo.FM and Life.Exp are left-skewed wheras GNI, Mat.Mor, Ado.Birth and Parli.F are right-skewed.
+
+
+
+```{r, include=TRUE}
+human <- read.table("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human2.txt", sep  =",", header = T)
+summary(human)
+ggpairs(human)
+```
+
+What about the correlations then? Below we have the correlation matrix and corrplot visualization of the relationships between the variables. Blue dots mean positive relationshop and the red dots negative relationship. The strength of the correlation can be observed by looking at the size and the intensity of the circles.  
+
+The highest positive correlation (0.789) is between life expectancy and education expectancy and the highest negative correlation (-0.857) between maternal mortality rate and life expectancy. 
+
+All in all, the correlations, both positive and negative, tend to be pretty strong between the variables. This is expected as it is hard to imagine a situation where e.g. life expectancy would not be correlated with GNI.
+
+```{r, include=TRUE}
+cor_human <- cor(human)
+cor_human
+cor(human) %>% corrplot
+```
+
+##Principal component analysis
+
+The name of principal component analysis is quite telling: the basic idea is to find the principal components of the data. In other words, we transform the variables into a new set of variables, which are uncorrelated and ordered based on the amount of variation they account in the original variables.
+
+In the next exercise we reduce the dimensions in the data by decomposing the data matrix into a product of smaller matrices. This helps us to graph and make initial assesments of the data. 
+
+We use the singular value decomposition method (SVD), which is included in the R standard package. In the the table below we see first the standard errors of the variables. Next, we have the principal components. 
+
+PC1 captures most of the variance in the data. PC2 is orthogonal to PC1 and captures most of the variance that is left in the data. By looking at the summary and the rounded percentage, we see that principal component 1 captures basically all the variance in the data. The relations between variables are very similiar to the simple correlation analysis that was done before.
+
+
+
+```{r, include=TRUE}
+pca_human <- prcomp(human)
+pca_human
+
+s <- summary(pca_human)
+s
+
+pca_pr <- round(100*s$importance[2,], digits = 1) 
+pca_pr
+```
+
+```{r, include=TRUE}
+
+pc_lab <- paste0(names(pca_pr), " (", pca_pr, "%)")
+biplot(pca_human, cex = c(0.8, 1), col = c("grey40", "deeppink2"), xlab = NA, ylab = NA)
+
+```
+
+The biplot of the eight princinpal components in the data. Unstandardized variables. Gross national income seems to explain most of the variance in the data, but this is misleading as it is probably an outcome of the other variables. 
+  
+    
+     
+       
+Biplotting the results does not tell us much as PC1 dominates the graph. We do not even see the other arrows. Let's see whether using standardized variables would make more sense.
+
+
+##Principal component analysis with standardized variables and interpretation
+
+Using standardized variables is generally a good idea as it improves comparability between variables that are in different scales. We see that our results change remarkably when we rerun the PCA with standardized variables. PC1 no longer explains all the variance, but just little over half of it. PC2 explains little over 16 % and PC3 almost 10 % percent.
+
+
+
+```{r, include=TRUE}
+pca_human <- prcomp(human, scale. = TRUE)
+pca_human
+
+s <- summary(pca_human)
+s
+
+# rounded percentages of variance captured by each PC
+pca_pr <- round(100*s$importance[2,], digits = 1) 
+
+# print out the percentages of variance
+pca_pr
+
+# create object pc_lab to be used as axis labels
+pc_lab <- paste0(names(pca_pr), " (", pca_pr, "%)")
+
+# draw a biplot
+biplot(pca_human, cex = c(0.8, 1), col = c("grey40", "deeppink2"), xlab = pc_lab[1], ylab = pc_lab[2])  
+```  
+  
+    
+The biplot of the eight princinpal components in the data. Standardized variables. PC1 explains little over half of the variance in the data. However, it does not capture the variance of females in the labour force and females in the parliament.  
+  
+      
+       
+Standardizing the variables allowed us to overcome the problem of GNI dominating the results. Now, the loadings of the variables are much more balanced and the biplot makes more sense.
+
+It seems that most of the drivers of human development are correlated and to some extent part of the same bigger component. This same component is also driving the growth of gross national income. Based on the literature on economic growth and welfare, inclusice political and economic institutes would be a good guess. However, we have to keep in mind that PCA does not tell us anything about causality.  
+
+In both PCA analyses we can see that PC1 captures much of the variance of six variables. Maternal mortality rate and adolescent birth rate have negative values. These two are also strongly and positively correlated with each other. The variables that have positive values are gross national income, life expectancy, expected years of schooling and the proportion of females in education. These four are also positively correlated with each other. 
+
+PC2 in turn seems to capture variance in two variables: proportion of females in labour force and proportion of females in parliament. These two are also the main factor that construct PC3. I have to say I am a bit suprised that the two variables measuring gender equality are not much correlated with other variables and do not contribute much to PC1.
+
+One possible interpretation of PC1 and PC2 would be that the first one proxies the human capital that is both the driver and the result of high gross national income; and the second one captures the differences in gender equality that are not strongly associated with economic growth (contrary to e.g. providing education to girls). 
+
+The graphs seem to give some support to our theory. PC1 seems to divide the countries in based on their economic development. On the left hand side we have the mostly developed countries (Nordic countries, Switzerland etc.) and on the right hand side developing countries (Sierra Leone, Niger etc.). PC2 in turn tells more about the socio-cultural divide between countries. In the upper part of the diagram we have Western countries and some of the more secular African countries. On the bottom of the diagram lie the conservative Muslim countries, where the participation of women in societal activities is more limited.
+
+##Multiple correspondence analysis
+
+Finally, we run multiple correspondence analysis (MCA) on a new dataset "tea", which we access with the FactomineR package. The MCA is quite similiar method to PCA, but it allows us to analyze the pattern of relationshipus witihin categorical variables. We apply this method to study patterns and associations in survey data.
+
+
+
+```{r, include=FALSE}
+library(FactoMineR)
+data(tea)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+```
+
+
+```{r, include=TRUE}
+
+str(tea)
+dim(tea)
+
+
+keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+
+tea_time <- dplyr::select(tea, one_of(keep_columns))
+
+
+summary(tea_time)
+dim(tea_time)
+str(tea_time)
+```
+
+```{r, include=TRUE}
+gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+```
+
+The original dataset included 300 observations and 36 variables, but in this exercise we use only 6 variables: "Tea", "How", "how", "sugar", "where" and "lunch". These are all categorical variables with 2-4 different categories. 
+
+
+
+```{r, include=TRUE}
+# multiple correspondence analysis
+mca <- MCA(tea_time, graph = FALSE)
+
+# summary of the model
+summary(mca)
+
+# visualize MCA
+plot(mca, invisible=c("ind"), habillage = "quali")
+plot(mca, invisible=c("var"), habillage = "quali")
+
+```
+
+The dimension 1 captures 15.24% and the dimenstion 2 captures 14.23 of the variance. We can see from the graphs that tea shop, unpackaged and other seem to be the most extreme categorical values that separate the individuals most. When we look at the whole categories, it seems that "how" and "where" contribute the most to dimension 1. In other words, people who buy their tea unpackaged and from tea shop seem to be the ones driving the dimension 1. These "tea elitists" are also the ones who contribute most to variance in dimension 2. In the dimension 3 the ways in which an individual enjoys her/his tea (what type of tea, sugar or not) seems to matter most. 
+
+Based on this really simple exercise we could argue that tea drinking habits are quite similiar between most people, but those who are "teaholists" stand out from the general population. 
